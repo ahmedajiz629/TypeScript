@@ -28417,6 +28417,10 @@ func (c *Checker) getSimplifiedIndexedAccessTypeWorker(t *Type, writing bool) *T
 		if distributedOverObject != nil {
 			return distributedOverObject
 		}
+	} else if distributed := c.distributeGenericIndexOverMappedIntersection(objectType, indexType, writing); distributed != nil {
+		// (Record<K1, T> & Record<K2, U>)[K1] -> T, not T & U.
+		// A generic key is only known to exist on the mapped constituents it is assignable to.
+		return distributed
 	}
 	// So ultimately (reading):
 	// ((A & B) | C)[K1 | K2] -> ((A & B) | C)[K1] | ((A & B) | C)[K2] -> (A & B)[K1] | C[K1] | (A & B)[K2] | C[K2] -> (A[K1] & B[K1]) | C[K1] | (A[K2] & B[K2]) | C[K2]
@@ -28455,6 +28459,56 @@ func (c *Checker) distributeObjectOverIndexType(objectType *Type, indexType *Typ
 		return c.getUnionType(types)
 	}
 	return nil
+}
+
+// distributeGenericIndexOverMappedIntersection simplifies (M1 & M2 & ...)[K] for generic mapped types.
+// A constituent contributes its property type only when K is one of its keys. Intersecting every
+// template, as in (A & B)[K] -> A[K] & B[K], is unsound otherwise: (Record<K1, T> & Record<K2, U>)[K1]
+// is T, and (Record<K1, T> & Record<K2, U>)[K1 | K2] is T | U.
+func (c *Checker) distributeGenericIndexOverMappedIntersection(objectType *Type, indexType *Type, writing bool) *Type {
+	if objectType.flags&TypeFlagsIntersection == 0 || c.shouldDeferIndexType(objectType, IndexFlagsNone) {
+		return nil
+	}
+	constituents := objectType.Types()
+	hasGenericMapped := false
+	for _, constituent := range constituents {
+		if c.isGenericMappedType(constituent) {
+			hasGenericMapped = true
+			continue
+		}
+		// A non-generic mapped type, such as Record<string, void>, must keep the deferred
+		// indexed-access form. Simplifying it changes variance for types like
+		// ({ [K in keyof T]: T[K] } & Record<string, void>)[keyof T].
+		// Record<never, unknown> has no keys, so it cannot contribute a property type.
+		if constituent.objectFlags&ObjectFlagsMapped != 0 && c.getIndexType(constituent).flags&TypeFlagsNever == 0 {
+			return nil
+		}
+	}
+	if !hasGenericMapped {
+		return nil
+	}
+	filtered := make([]*Type, 0, len(constituents))
+	includedMapped := false
+	for _, constituent := range constituents {
+		// A constituent contributes only when this index is one of its keys. A concrete
+		// constituent such as { x: 2 } does not add its property type for a key of K1.
+		if !c.isTypeAssignableTo(indexType, c.getIndexType(constituent)) {
+			continue
+		}
+		filtered = append(filtered, constituent)
+		if c.isGenericMappedType(constituent) {
+			includedMapped = true
+		}
+	}
+	// No mapped constituent is known to have this key. Leave the access deferred so a union
+	// index such as K1 | K2 can be distributed into K1 and K2 first.
+	if !includedMapped {
+		return nil
+	}
+	types := core.Map(filtered, func(constituent *Type) *Type {
+		return c.getSimplifiedType(c.getIndexedAccessType(constituent, indexType), writing)
+	})
+	return c.getIntersectionType(types)
 }
 
 func (c *Checker) distributeIndexOverObjectType(objectType *Type, indexType *Type, writing bool) *Type {

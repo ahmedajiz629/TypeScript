@@ -1,0 +1,207 @@
+//// [tests/cases/compiler/recordIntersectionNotAssignableToUnionKeys.ts] ////
+
+=== recordIntersectionNotAssignableToUnionKeys.ts ===
+// A key that belongs only to one side of the intersection has that side's property type.
+// It is not T & U, so the intersection is not assignable to Record<K1 | K2, T & U>.
+const f = <K1 extends string, T, K2 extends string, U>(
+>f : Symbol(f, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 5))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 11))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 29))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 32))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 51))
+
+    x: Record<K1, T> & Record<K2, U>,
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 55))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 11))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 29))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 32))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 51))
+
+    // @ts-expect-error
+): Record<K1 | K2, T & U> => x;
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 11))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 32))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 29))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 51))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 2, 55))
+
+// An empty mapped type does not supply the missing keys.
+const f2 = <K1 extends string, T, K2 extends string, U>(
+>f2 : Symbol(f2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 5))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 12))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 30))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 33))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 52))
+
+    x: Record<never, unknown> & Record<K1, T> & Record<K2, U>,
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 56))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 12))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 30))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 33))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 52))
+
+    // @ts-expect-error
+): Record<never, unknown> & Record<K1 | K2, T & U> => x;
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 12))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 33))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 30))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 52))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 8, 56))
+
+// A concrete constituent does not supply the missing keys either.
+const f2b = <K1 extends string, T, K2 extends string, U>(
+>f2b : Symbol(f2b, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 5))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 13))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 31))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 34))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 53))
+
+    x: { x: 2 } & Record<K1, T> & Record<K2, U>,
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 57))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 15, 8))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 13))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 31))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 34))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 53))
+
+    // @ts-expect-error
+): { x: 2 } & Record<K1 | K2, T & U> => x;
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 17, 4))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 13))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 34))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 31))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 53))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 14, 57))
+
+// The same non-mapped constituent is fine when every target key is on both records.
+const f3 = <K extends string, T, U>(
+>f3 : Symbol(f3, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 5))
+>K : Symbol(K, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 12))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 29))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 32))
+
+    x: { x: 2 } & Record<K, T> & Record<K, U>,
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 36))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 21, 8))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K : Symbol(K, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 12))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 29))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K : Symbol(K, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 12))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 32))
+
+): { x: 2 } & Record<K, T & U> => x;
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 22, 4))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K : Symbol(K, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 12))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 29))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 32))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 20, 36))
+
+// Same keys: every property is present on both sides.
+const g = <K extends string, T, U>(
+>g : Symbol(g, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 5))
+>K : Symbol(K, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 11))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 28))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 31))
+
+    x: Record<K, T> & Record<K, U>,
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 35))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K : Symbol(K, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 11))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 28))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K : Symbol(K, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 11))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 31))
+
+): Record<K, T & U> => x;
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K : Symbol(K, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 11))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 28))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 31))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 25, 35))
+
+// Same property type on every key.
+const h = <K1 extends string, K2 extends string, T>(
+>h : Symbol(h, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 5))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 11))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 29))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 48))
+
+    x: Record<K1, T> & Record<K2, T>,
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 52))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 11))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 48))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 29))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 48))
+
+): Record<K1 | K2, T> => x;
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 11))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 29))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 48))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 30, 52))
+
+// K2 is a subset of K1, so every key of the target is present on both sides.
+const i = <K1 extends string, K2 extends K1, T, U>(
+>i : Symbol(i, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 5))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 11))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 29))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 11))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 44))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 47))
+
+    x: Record<K1, T> & Record<K2, U>,
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 51))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 11))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 44))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 29))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 47))
+
+): Record<K2, T & U> => x;
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 29))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 44))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 47))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 35, 51))
+
+// T is assignable to U, so each side's property type is assignable to U.
+const j = <K1 extends string, K2 extends string, T extends U, U>(
+>j : Symbol(j, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 5))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 11))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 29))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 48))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 61))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 61))
+
+    x: Record<K1, T> & Record<K2, U>,
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 65))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 11))
+>T : Symbol(T, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 48))
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 29))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 61))
+
+): Record<K1 | K2, U> => x;
+>Record : Symbol(Record, Decl(lib.es5.d.ts, --, --))
+>K1 : Symbol(K1, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 11))
+>K2 : Symbol(K2, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 29))
+>U : Symbol(U, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 61))
+>x : Symbol(x, Decl(recordIntersectionNotAssignableToUnionKeys.ts, 40, 65))
+
